@@ -10,7 +10,7 @@ import re, gemail, ipinfo, logging, sys
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s <%(levelname)s> %(message)s")
 
 try:
-    logfile = open("auth.log.example", "r") # CHANGE TO /var/log/auth.log
+    logfile = open("/var/log/auth.log", "r") # CHANGE TO /var/log/auth.log
 except:
     logging.error("No existe o incapaz de abrir '/var/log/auth.log'")
     sys.exit(1)
