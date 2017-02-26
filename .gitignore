@@ -1,3 +1,43 @@
+# Ignore special project files
+.gmail_login
+auth.log.example
+.ipdb
+.pubiplist
+sshlog.html
+
+# Created by https://www.gitignore.io/api/linux,vim
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+### Vim ###
+# swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# session
+Session.vim
+# temporary
+.netrwhist
+# auto-generated tag files
+tags
+
+# End of https://www.gitignore.io/api/linux,vim
+
+# Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
