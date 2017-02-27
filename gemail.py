@@ -6,13 +6,16 @@ la primera línea del archivo tiene que ser la cuenta de correo (ej. cuenta@gmai
 
 import smtplib
 import sys
+import os
 from email.mime.text import MIMEText
 
 def getcredentials():
     """ Lee la cuenta de Gmail y la contraseña desde el archivo '.gmail_login'. """
     credentials = []
+    basepath = os.path.dirname(os.path.realpath(__file__))
+
     try:
-        f = open(".gmail_login", "r")
+        f = open(basepath+"/"+".gmail_login", "r")
         for line in f:
             credentials.append(line.strip("\n "))
         f.close()

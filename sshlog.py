@@ -5,12 +5,21 @@ las direcciones IP para la geolocalización. El programa genera dos archivos '.i
 '.ipdb' es un archivo de texto con todas las direcciones IP que han intentado conectarse al ordenador y los datos de geolocalización.
 'sshlog.html' contiene los datos relevantes de SSH, cada evento está codificado con colores según la importancia. Se envía por email.
 """
-import re, gemail, ipinfo, logging, sys
+import re
+import gemail
+import ipinfo
+import logging
+import sys
+import os
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s <%(levelname)s> %(message)s")
 
+basepath = os.path.dirname(os.path.realpath(__file__))
+ipdbpath = basepath + "/" + ".ipdb"
+sshlogpath = basepath + "/" + "sshlog.html"
+
 try:
-    logfile = open("/var/log/auth.log", "r") # CHANGE TO /var/log/auth.log
+    logfile = open(basepath+"/auth.log.example", "r") # CHANGE TO /var/log/auth.log
 except:
     logging.error("No existe o incapaz de abrir '/var/log/auth.log'")
     sys.exit(1)
@@ -25,22 +34,22 @@ for line in logfile:
 logfile.close()
 
 try:
-    outfile = open("sshlog.html", "r")
+    outfile = open(sshlogpath, "r")
 except FileNotFoundError:
     logging.debug("'sshlog.html' no existe, creando...")
-    open("sshlog.html", "w").close()
-    outfile = open("sshlog.html", "r")
+    open(sshlogpath, "w").close()
+    outfile = open(sshlogpath, "r")
 
 
 oldlog = outfile.readlines()
 outfile.close()
 
 try:
-    ipfile = open(".ipdb", "r")
+    ipfile = open(ipdbpath, "r")
 except FileNotFoundError:
     logging.debug("'.ipdb' no existe, creando...")
-    open(".ipdb", "w").close()
-    ipfile = open(".ipdb", "r")
+    open(ipdbpath, "w").close()
+    ipfile = open(ipdbpath, "r")
 
 ipdb = {}
 for line in ipfile:
@@ -50,7 +59,7 @@ ipfile.close()
 
 if len(oldlog)-4 != len(matches): # len(oldlog) - 4 para no tener en cuenta los tags de html
     logging.debug("Actualizando 'sshlog.html'")
-    outfile = open("sshlog.html", "w")
+    outfile = open(sshlogpath, "w")
     
     outfile.write("<html>\n<body>\n")
 
@@ -91,13 +100,13 @@ if len(oldlog)-4 != len(matches): # len(oldlog) - 4 para no tener en cuenta los 
     outfile.write("</body>\n</html>")
     outfile.close()
 
-    outfile = open("sshlog.html", "r")
+    outfile = open(sshlogpath, "r")
     message = outfile.read()
     outfile.close()
     gemail.sendme("ssh log", message, "html")
     logging.debug("mensaje enviado por email")
 
-    ipfile = open(".ipdb", "w")
+    ipfile = open(ipdbpath, "w")
     for ip, dsc in ipdb.items():
         ipfile.write("{}: {}\n".format(ip, dsc))
     ipfile.close()

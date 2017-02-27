@@ -7,6 +7,7 @@ import gemail
 import time
 import ipinfo
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s <%(levelname)s> %(message)s")
 
@@ -14,14 +15,17 @@ response = requests.get("http://icanhazip.com")
 response.raise_for_status()
 new_ip = response.text.strip("\n ")
 
+basepath = os.path.dirname(os.path.realpath(__file__))
+pubiplistpath = basepath + "/" + ".pubiplist"
+
 try:
-    f = open(".pubiplist", "r")
+    f = open(pubiplistpath, "r")
 except FileNotFoundError:
     logging.debug("'.pubiplist' no existe, creando...")
-    f = open(".pubiplist", "w")
+    f = open(pubiplistpath, "w")
     f.write("creado: {}\nactual: 0.0.0.0\n".format(time.asctime()))
     f.close()
-    f = open(".pubiplist", "r")
+    f = open(pubiplistpath, "r")
 
 fecha = f.readline()
 old_ip = f.readline().split(":")[1].strip("\n ")
@@ -42,7 +46,7 @@ if new_ip != old_ip:
     logging.debug("mensaje enviado por email")
 
     hist[new_ip] = hist.get(new_ip, 0) + 1
-    f = open(".pubiplist", "w")
+    f = open(pubiplistpath, "w")
     f.write(fecha)
     f.write("actual: {}\n".format(new_ip))
     for ip, cnt in sorted(hist.items(), key = lambda l : l[1], reverse = True):
